@@ -11,7 +11,7 @@
             <div class="embed-responsive embed-responsive-16by9 video">
                 <video id="vid-{{video.id}}" class="video-js embed-responsive-item" controls="" preload="auto"
                     poster="{% static 'viewer/images/thumbnails/' %}{{video.thumbnail}}" loop="true">
-                    <source src="/local-media{{video.path|urlencode}}" type="{{video.filename|get_type}}">
+                    <source src="/viewer/images/{{video.path|urlencode}}" type="{{video.filename|get_type}}">
                     <p class="vjs-no-js">
                         To view this video please enable JavaScript, and consider upgrading to a
                         web browser that
@@ -93,8 +93,8 @@
                             <img src="{% static 'viewer/images/thumbnails/' %}{{video.thumbnail}}"
                                 preview="{% static 'viewer/images/previews/' %}{{video.preview}}"
                                 thumbnail="{% static 'viewer/images/thumbnails/' %}{{video.thumbnail}}"
-                                class="car-preview-img video-preview" dataframes={{dataframes}} name='preview-{{video.id}}'
-                                alt="{{video.filename}}" style="width:100%;">
+                                class="car-preview-img video-preview" dataframes={{dataframes}}
+                                name='preview-{{video.id}}' alt="{{video.filename}}" style="width:100%;">
                         </a>
                         <div class="img-overlay">
                             <p>{{video.filename|truncatechars:35}}</p>
@@ -106,7 +106,8 @@
         </div>
         {% if recommendations|length >= 14 %}
         <div>
-            {% include "viewer/carousel.html" with id="carousel1"  title="Further recommendations:" result_set=recommendations|slice:"8:32" type="videos" dataframes=15 %}
+            {% include "viewer/carousel.html" with id="carousel1" title="Further recommendations:"
+            result_set=recommendations|slice:"8:32" type="videos" dataframes=15 %}
         </div>
         {% endif %}
         {% else %}
@@ -120,8 +121,8 @@
                             <img src="{% static 'viewer/images/thumbnails/' %}{{video.thumbnail}}"
                                 preview="{% static 'viewer/images/previews/' %}{{video.preview}}"
                                 thumbnail="{% static 'viewer/images/thumbnails/' %}{{video.thumbnail}}"
-                                class="car-preview-img video-preview" dataframes={{dataframes}} name='preview-{{video.id}}'
-                                alt="{{video.filename}}" style="width:100%;">
+                                class="car-preview-img video-preview" dataframes={{dataframes}}
+                                name='preview-{{video.id}}' alt="{{video.filename}}" style="width:100%;">
                         </a>
                     </div>
                     {% endfor %}

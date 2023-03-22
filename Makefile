@@ -1,30 +1,16 @@
-all: build-image push kill up 
+mount:
+	rclone mount onedrive_crypt:/sec local_media \
+	--vfs-cache-mode full --allow-other --no-modtime \
+	--max-read-ahead 1024k --dir-cache-time 1000h --vfs-read-ahead 1024k &
 
-build-image:
-	docker build -t smol .
-	docker build -t smol_nginx ./nginx
+unmount:
+	fusermount -u smol/local_media 
 
-push:
-	docker tag smol einaeffchen/smol
-	docker push einaeffchen/smol
-	docker tag smol_nginx einaeffchen/smol_nginx
-	docker push einaeffchen/smol_nginx
+build:
+	cd nginx && docker build -t einaeffchen/nginx-smol:dev .
+	docker build -t einaeffchen/smol:dev .
 
-kill:
-	docker-compose down
-	docker-compose rm -f
+up: 
+	docker-compose up -d
 
-up:
-	docker-compose pull
-	docker-compose -p smol up -d 
-
-logs:
-	docker logs django
-
-down:
-	docker-compose -p smol down
-
-killall:
-	docker kill django nginx postgresql
-	docker rm django nginx postgresql
-	docker volume rm smol_db-data smol_media-volume smol_ml-volume smol_static-movie-volume smol_static-volume
+restart: build up

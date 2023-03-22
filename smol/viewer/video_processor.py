@@ -33,19 +33,11 @@ def read_video_info(path: Path) -> dict:
     probe = ffmpeg.probe(str(path))
 
     video_stream = next(
-        (
-            stream
-            for stream in probe["streams"]
-            if stream["codec_type"] == "video"
-        ),
+        (stream for stream in probe["streams"] if stream["codec_type"] == "video"),
         None,
     )
     audio_stream = next(
-        (
-            stream
-            for stream in probe["streams"]
-            if stream["codec_type"] == "audio"
-        ),
+        (stream for stream in probe["streams"] if stream["codec_type"] == "audio"),
         None,
     )
     video_data = dict()
@@ -192,26 +184,23 @@ def add_labels_by_path(video_row: Video, video_path: Path):
 
 
 def generate_for_videos():
-    start = datetime.now()
     for suffix in settings.VIDEO_SUFFIXES:
+        video: Path
         for video in settings.MEDIA_DIR.rglob(f"*{suffix}"):
-            find_time = datetime.now()
-            if not Video.objects.filter(path=str(video)):
-                db_check = datetime.now()
+            print(f"processing {video}")
+            video_path = str(video.relative_to(settings.MEDIA_DIR))
+            if not Video.objects.filter(path=video_path):
                 video_data = read_video_info(video)
-                video_info = datetime.now()
                 video_data["size"] = video.stat().st_size
-                video_data["path"] = str(video)
+                video_data["path"] = video_path
                 video_data["filename"] = video.name
+                print(video_data)
                 frames = video_data.pop("frames")
                 video_row = Video(**video_data)
                 video_row.processed = False
                 video_row.save()
-                tn = datetime.now()
                 video_row.thumbnail = generate_thumbnail(video_row, video)
-                a_tn = datetime.now()
                 video_row.preview = generate_preview(video_row, frames, video)
-                a_pv = datetime.now()
                 add_labels_by_path(video_row, video)
                 video_row.save()
                 return {"finished": False, "file": video.name, "type": "video"}
@@ -220,9 +209,7 @@ def generate_for_videos():
 def generate_for_images():
     for suffix in settings.IMAGE_SUFFIXES:
         for image in settings.MEDIA_DIR.rglob(f"*{suffix}"):
-            if ".smol" not in image.parts and not Image.objects.filter(
-                path=str(image)
-            ):
+            if ".smol" not in image.parts and not Image.objects.filter(path=str(image)):
                 try:
                     image_data = read_image_info(image)
                 except OSError:

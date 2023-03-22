@@ -16,7 +16,6 @@ from pathlib import Path
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -24,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "k&ndet-+-&(yxp_hih^k9y*$hbe2p=$vzeryfj$x*&$#+0-$sx"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     "192.168.178.20",
@@ -46,7 +45,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
-    # 'corsheaders',
     "debug_toolbar",
 ]
 
@@ -56,7 +54,6 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
-    # 'django.middleware.csrf.CsrfViewMiddleware',
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -86,21 +83,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "smol.wsgi.application"
-
-
-# Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
-sqlite_file = Path("/srv/data/smol/local_media/.smol/db")
-sqlite_file.mkdir(exist_ok=True, parents=True)
-sqlite_file = sqlite_file / "smol.db"
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": str(sqlite_file),
-    }
-}
 
 
 # Password validation
@@ -161,14 +143,29 @@ SITE_ID = 1
 PREVIEW_IMAGES = 15
 
 MEDIA_URL = "/viewer/images/"
-MEDIA_ROOT = BASE_DIR / "media/"
+MEDIA_ROOT = BASE_DIR / "local_media/"
 MEDIA_DIR = BASE_DIR / "local_media"
 
-STATIC_URL = "/static/"
-STATIC_ROOT = MEDIA_DIR / ".smol/static"
+STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "local_media/.smol/viewer/static"
+STATICFILES_DIRS = (MEDIA_DIR / ".smol/static",)
+# Database
+# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+
+sqlite_file = MEDIA_DIR / ".smol/db"
+sqlite_file.mkdir(exist_ok=True, parents=True)
+sqlite_file = sqlite_file / "smol.db"
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": str(sqlite_file),
+    }
+}
 
 THUMBNAIL_DIR = STATIC_ROOT / "viewer/images/thumbnails"
 PREVIEW_DIR = STATIC_ROOT / "viewer/images/previews"
+
 if not THUMBNAIL_DIR.is_dir():
     THUMBNAIL_DIR.mkdir(exist_ok=True, parents=True)
 if not PREVIEW_DIR.is_dir():

@@ -18,7 +18,8 @@ Small Media Organization System
 ![Setup Smol](https://github.com/EinAeffchen/smol2.0/blob/master/screenshots/main.png?raw=true)
 
 ###  Prerequisites
-- Docker installed
+- [https://docs.npmjs.com/downloading-and-installing-node-js-and-npm/](NPM) installed
+- Python installed
 
 ### Setup
 1. Clone this repository
